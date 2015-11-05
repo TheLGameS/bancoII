@@ -13,7 +13,7 @@ import org.model.Paciente;
 public class ExemploHibernate {
 
 	private ModelController modelCtr = new ModelController();
-	private final int totalInsercao=1000;
+	private final int totalInsercao=10000;
 	
 	public void close() {
 		modelCtr.close();
@@ -156,9 +156,9 @@ public class ExemploHibernate {
 	}
 
 	private static void formataMostraTempo(String text ,long tempoPaciente) {
-		int hours = (int)  tempoPaciente / 3600000;
-		int minutes = (int) tempoPaciente / 60000;
-		int seconds = (int) tempoPaciente / 1000;
+		long hours = (int)  tempoPaciente / 3600000;
+		long minutes = (int) tempoPaciente / 60000;
+		long seconds = (int) tempoPaciente / 1000;
 		System.out.println(String.format(text +" %02d:%02d:%02d", hours,minutes,seconds));
 	}
 
