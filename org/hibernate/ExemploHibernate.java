@@ -3,9 +3,6 @@ package org.hibernate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import org.hibernate.control.ModelController;
@@ -16,8 +13,8 @@ import org.model.Paciente;
 public class ExemploHibernate {
 
 	private ModelController modelCtr = new ModelController();
-	private int codigoPacienteBusca=3;
-
+	private final int totalInsercao=1000;
+	
 	public void close() {
 		modelCtr.close();
 	}
@@ -26,7 +23,7 @@ public class ExemploHibernate {
 		modelCtr.deleteAll();
 	}
 
-	public void inserts() {
+	/*public void inserts() {
 		Calendar dn1 = new GregorianCalendar(1980,3,1);
 		dn1.add(Calendar.MONTH, -1);
 		Paciente pac1 = new Paciente("Paciente 1", "Ararangua", "SC", "R. das Oliveiras", dn1.getTime());
@@ -57,24 +54,40 @@ public class ExemploHibernate {
 
 		System.out.println("Insercoes realizazadas com sucesso!!!");
 
-	}
+	}*/
 
 	public void insertPaciente() {
-
-		for(int i=0 ; i< 5000; i++){
+		for(int i=0 ; i< totalInsercao; i++){
 			int mes = new Random().nextInt(12);
 			int dia = new Random().nextInt(28);
 
 			Calendar dn1 = new GregorianCalendar(1989,mes,dia);
 			dn1.add(Calendar.MONTH, -1);
 			Paciente pac1 = new Paciente("Paciente "+i, "Ararangua", "SC", "rua "+i+" "+mes+" "+dia, dn1.getTime());
-			modelCtr.insert(pac1);			
+			modelCtr.insert(pac1);		
 		}
-
 	}
 
+	public void insertMedico() {
+		for(int i=0 ; i< totalInsercao; i++){
+			int cod = i+1;
+			Medico med1 = new Medico(cod, "Medico "+cod);
+			modelCtr.insert(med1);
+		}
+	}
 
-	@SuppressWarnings("unchecked")
+	public void insertConsulta() {
+		for(int i=0 ; i< totalInsercao; i++){
+			int cod = i+1;
+			Medico med = new Medico(cod, null);
+			Paciente pac = new Paciente(cod,null,null,null,null,null);
+			Consulta cons = new Consulta(cod, pac, med, new Date(), new Random().nextInt(999));
+			modelCtr.insert(cons);
+
+		}
+	}
+
+	/*@SuppressWarnings("unchecked")
 	public void print() {
 		//Alterar a chamada em função do último valor da sequence
 		Paciente pac = (Paciente)modelCtr.getByCode(Paciente.class,codigoPacienteBusca);
@@ -115,7 +128,7 @@ public class ExemploHibernate {
 			System.out.println("Id: "+paciente.getId()+" Nome: "+paciente.getNome());
 		}
 
-	}
+	}*/
 
 	public static void main(String[] args) {
 
@@ -125,17 +138,28 @@ public class ExemploHibernate {
 
 		long tempoPaciente = System.currentTimeMillis();
 		ex.insertPaciente();
-		tempoPaciente = System.currentTimeMillis() - tempoPaciente   ;
-		formataMostraTempo(tempoPaciente);
+		tempoPaciente = System.currentTimeMillis() - tempoPaciente;
+		formataMostraTempo(Paciente.class.getName(),tempoPaciente);
 		//ex.print();
+
+		long tempoMedico = System.currentTimeMillis();
+		ex.insertMedico();
+		tempoMedico = System.currentTimeMillis() - tempoMedico;
+		formataMostraTempo(Medico.class.getName(),tempoMedico);
+
+		long tempoConsulta = System.currentTimeMillis();
+		ex.insertConsulta();
+		tempoConsulta = System.currentTimeMillis() - tempoConsulta;
+		formataMostraTempo(Consulta.class.getName(),tempoConsulta);
+
 		ex.close();
 	}
 
-	private static void formataMostraTempo(long tempoPaciente) {
+	private static void formataMostraTempo(String text ,long tempoPaciente) {
 		int hours = (int)  tempoPaciente / 3600000;
 		int minutes = (int) tempoPaciente / 60000;
 		int seconds = (int) tempoPaciente / 1000;
-		System.out.println(String.format("%02d:%02d:%02d", hours,minutes,seconds));
+		System.out.println(String.format(text +" %02d:%02d:%02d", hours,minutes,seconds));
 	}
 
 }

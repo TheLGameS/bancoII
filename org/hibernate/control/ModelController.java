@@ -45,6 +45,8 @@ public class ModelController implements IController {
 		this.session.createSQLQuery("delete from consulta").executeUpdate();
 		this.session.createSQLQuery("delete from paciente").executeUpdate();
 		this.session.createSQLQuery("delete from medico").executeUpdate();
+		this.session.createSQLQuery("drop sequence SEQ_PACIENTE_PK ").executeUpdate();
+		this.session.createSQLQuery("create sequence SEQ_PACIENTE_PK increment by 1 maxvalue 999999999999999999999999999 cache 20 nocycle noorder").executeUpdate();
 		this.session.getTransaction().commit();
 	}
 	
