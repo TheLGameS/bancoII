@@ -136,7 +136,6 @@ public class ExemploHibernate {
 		int minutes = (int) tempoPaciente / 60000;
 		int seconds = (int) tempoPaciente / 1000;
 		System.out.println(String.format("%02d:%02d:%02d", hours,minutes,seconds));
-		System.out.println("teste Cris");
 	}
 
 }
