@@ -15,6 +15,7 @@
 		<property name="hibernate.current_session_context_class">thread</property>
 		<property name="hibernate.connection.pool_size">10</property>
 		<property name="hbm2ddl.auto">update</property>
+		<property name="hibernate.connection.autocommit">false</property>
 
 		<mapping class="org.model.Paciente" />
 		<mapping class="org.model.Medico" />

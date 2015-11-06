@@ -19,7 +19,7 @@ public class ModelController implements IController {
 		this.session.persist(object);
 		this.session.getTransaction().commit();
 	}
-
+	
 	public void update(Object object) {
 		this.session.beginTransaction();
 		this.session.merge(object);
@@ -30,6 +30,10 @@ public class ModelController implements IController {
 		this.session.beginTransaction();
 		this.session.delete(object);
 		this.session.getTransaction().commit();
+	}
+	
+	public Session getSession(){
+		return this.session;
 	}
 	
 	public List<?> list(Class<?> iClass) {
