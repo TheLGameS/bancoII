@@ -13,7 +13,7 @@ import org.model.Paciente;
 public class ExemploHibernate {
 
 	private ModelController modelCtr = new ModelController();
-	private final int totalInsercao=500000;
+	private final int totalInsercao=1000000;
 
 	public void close() {
 		modelCtr.close();
@@ -46,21 +46,32 @@ public class ExemploHibernate {
 	public void insertConsulta() {
 		Session session = modelCtr.getSession();
 		Transaction tx = session.beginTransaction();
+		
 		for(int i=0 ; i< totalInsercao; i++){
 			int cod = new Random().nextInt(499);
 			Medico med = new Medico(cod == 0 ? 1 : cod, null);
 			Paciente pac = new Paciente(cod == 0 ? 1 : cod,null,null,null,null,null);
 			Consulta cons = new Consulta(i+1, pac, med, new Date(), new Random().nextInt(999));
 			session.save(cons);
+			
+			if(i == 100000 || i == 200000 || i == 300000 || i == 400000 || i == 500000 ||
+			   i == 600000 || i == 700000 || i == 800000 || i == 900000 ){
+					tx.commit();
+					session.flush();
+					session.clear();
+					tx = session.beginTransaction();
+					System.out.println("Iteracao: "+i+" Hora: "+new Date());
+			}
 		}
 		tx.commit();
+		System.out.println("Iteracao:1000000"+" Hora: "+new Date());
 	}
 
 	public static void main(String[] args) {
 
 		ExemploHibernate ex = new ExemploHibernate();
 		ex.clean();
-
+		
 		long tempoPaciente = System.currentTimeMillis();
 		ex.insertPaciente();
 		tempoPaciente = System.currentTimeMillis() - tempoPaciente;
@@ -71,6 +82,7 @@ public class ExemploHibernate {
 		tempoMedico = System.currentTimeMillis() - tempoMedico;
 		formataMostraTempo(Medico.class.getName(),tempoMedico);
 
+		System.out.println("Iteracao:      0"+"\t Hora: "+new Date());
 		long tempoConsulta = System.currentTimeMillis();
 		ex.insertConsulta();
 		tempoConsulta = System.currentTimeMillis() - tempoConsulta;
